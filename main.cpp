@@ -1,158 +1,114 @@
-#include <iostream>
-#include <stdlib.h>
-#include<windows.h>
-#ifdef __APPLE__
-#include <OpenGL/OpenGL.h>
-#include <GLUT/glut.h>
-#else
+#include<stdio.h>
+#include <GL/gl.h>
 #include <GL/glut.h>
-#endif
+float x1,y1,x2,y2,m,i,j;
+float dx,dy;
+void display(void)
+{
+/* clear all pixels */
+glClear (GL_COLOR_BUFFER_BIT);
+/* draw white polygon (rectangle) with corners at
+* (0.25, 0.25, 0.0) and (0.75, 0.75, 0.0)
+*/
+glEnd();
 
-using namespace std;
+glColor3f (0.0, 1.0, 0.0);
+glBegin(GL_POINTS);
+//write your code here
 
-//Called when a key is pressed
-void handleKeypress(unsigned char key, int x, int y) {
-	switch (key) {
-		case 27: //Escape key
-			exit(0);
-	}
+if(m>0 && m<=1)
+{
+while(x1<=x2 && y1<=y2)
+{
+    x1=x1+1;
+    y1=y1+m;
+    glVertex3f(x1/100,y1/100,0.0);
+   printf("%f %f",x1,y1);
+
+}
+}
+else if(m>1)
+{
+    while(x1<=x2 && y1<=y2)
+{
+    x1=x1+(1/m);
+    y1=y1+1;
+   glVertex3f(x1/100,y1/100,0.0);
+   printf("%f %f",x1,y1);
+}
 }
 
-//Initializes 3D rendering
-void initRendering() {
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_COLOR_MATERIAL);
-	glEnable(GL_LIGHTING); //Enable lighting
-	//you can have upto 8 lighting
-	glEnable(GL_LIGHT0); //Enable light #0
-	glEnable(GL_LIGHT1); //Enable light #1
-	glEnable(GL_NORMALIZE); //Automatically normalize normals
-	//glShadeModel(GL_SMOOTH); //Enable smooth shading
+else if(m>-1 && m<=0)
+{
+    while(x1>=x2 && y1>=y2)
+{
+    x1=x1-1;
+    y1=y1-m;
+   glVertex3f(x1/100,y1/100,0.0);
+   printf("%f %f",x1,y1);
 }
-
-//Called when the window is resized
-void handleResize(int w, int h) {
-	glViewport(0, 0, w, h);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(45.0, (double)w / (double)h, 1.0, 200.0);
 }
+else if(m<-1)
 
-float _angle = -70.0f;
+  {
 
-//Draws the 3D scene
-void drawScene() {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-	glTranslatef(0.0f, 0.0f, -8.0f);
-
-	//Add ambient light
-	//sh that shines everywhere in our scene by the same amount
-	//every face gets the same amount
-	GLfloat ambientColor[] = {0.3f, 0.3f, 0.3f, 1.0f}; //Color (0.2, 0.2, 0.2) and intensity //can be greater than 1 so not like color
-	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientColor);
-
-	//Add positioned light
-	GLfloat lightColor0[] = {0.9f, 0.9f, 0.9f, 1.0f}; //Color (0.9, 0.9, 0.9)
-	GLfloat lightPos0[] = {4.0f, 0.0f, 8.0f, 1.0f}; //Positioned at (4, 0, 8)
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor0);
-	glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
-
-	//Add directed light
-	GLfloat lightColor1[] = {0.2f, 0.5f, 0.5f, 1.0f}; //Color (0.2, 0.5, 0.5)
-	//Coming from the direction (-1, 0.5, 0.5)
-	// 0 because direced light source
-	GLfloat lightPos1[] = {-1.0f, 0.5f, 0.5f, 0.0f};
-	glLightfv(GL_LIGHT1, GL_DIFFUSE, lightColor1);
-	glLightfv(GL_LIGHT1, GL_POSITION, lightPos1);
-
-	glRotatef(_angle, 1.0f, 0.0f, 0.0f);
-	glColor3f(1.0f, 1.0f, 0.0f);
-	glBegin(GL_QUADS);
-
-	//Front
-	//normal is a vector perpendicular the face we are drawing
-	//we need this because if the light source is directly opp to the face then it will be light a lot
-	//or if behind it won't be lit at all
-	//they have to point outwards, so the back of the face don't get light
-	glNormal3f(0.0f, 0.0f, 1.0f);
-	//glNormal3f(-1.0f, 0.0f, 1.0f);
-	glVertex3f(-1.5f, -1.0f, 1.5f);
-	//glNormal3f(1.0f, 0.0f, 1.0f);
-	glVertex3f(1.5f, -1.0f, 1.5f);
-	//glNormal3f(1.0f, 0.0f, 1.0f);
-	glVertex3f(1.5f, 1.0f, 1.5f);
-	//glNormal3f(-1.0f, 0.0f, 1.0f);
-	glVertex3f(-1.5f, 1.0f, 1.5f);
-
-	//Right
-	glNormal3f(1.0f, 0.0f, 0.0f);
-	//glNormal3f(1.0f, 0.0f, -1.0f);
-	glVertex3f(1.5f, -1.0f, -1.5f);
-	//glNormal3f(1.0f, 0.0f, -1.0f);
-	glVertex3f(1.5f, 1.0f, -1.5f);
-	//glNormal3f(1.0f, 0.0f, 1.0f);
-	glVertex3f(1.5f, 1.0f, 1.5f);
-	//glNormal3f(1.0f, 0.0f, 1.0f);
-	glVertex3f(1.5f, -1.0f, 1.5f);
-
-	//Back
-	glNormal3f(0.0f, 0.0f, -1.0f);
-	//glNormal3f(-1.0f, 0.0f, -1.0f);
-	glVertex3f(-1.5f, -1.0f, -1.5f);
-	//glNormal3f(-1.0f, 0.0f, -1.0f);
-	glVertex3f(-1.5f, 1.0f, -1.5f);
-	//glNormal3f(1.0f, 0.0f, -1.0f);
-	glVertex3f(1.5f, 1.0f, -1.5f);
-	//glNormal3f(1.0f, 0.0f, -1.0f);
-	glVertex3f(1.5f, -1.0f, -1.5f);
-
-	//Left
-	glNormal3f(-1.0f, 0.0f, 0.0f);
-	//glNormal3f(-1.0f, 0.0f, -1.0f);
-	glVertex3f(-1.5f, -1.0f, -1.5f);
-	//glNormal3f(-1.0f, 0.0f, 1.0f);
-	glVertex3f(-1.5f, -1.0f, 1.5f);
-	//glNormal3f(-1.0f, 0.0f, 1.0f);
-	glVertex3f(-1.5f, 1.0f, 1.5f);
-	//glNormal3f(-1.0f, 0.0f, -1.0f);
-	glVertex3f(-1.5f, 1.0f, -1.5f);
-
-	glEnd();
-
-	glutSwapBuffers();
+    while(x1>=x2 && y1>=y2)
+{
+    x1=x1-(1/m);
+    y1=y1-1;
+    glVertex3f(x1/100,y1/100,0.0);
+    printf("%f %f",x1,y1);
 }
+  }
 
-void update(int value) {
-	_angle += 1.5f;
-	if (_angle > 360) {
-		_angle -= 360;
-	}
+glEnd();
 
-	glutPostRedisplay();
-	glutTimerFunc(25, update, 0);
+
+/* don't wait!
+* start processing buffered OpenGL routines
+*/
+glFlush ();
 }
+void init (void)
+{
+/* select clearing (background) color */
+glClearColor (0.0, 0.0, 0.0, 0.0);
+/* initialize viewing values */
+glMatrixMode(GL_PROJECTION);
+glLoadIdentity();
+glOrtho(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
+}
+/*
+* Declare initial window size, position, and display mode
+* (single buffer and RGBA). Open window with "hello"
+* in its title bar. Call initialization routines.
+* Register callback function to display graphics.
+* Enter main loop and process events.
+*/
+int main(int argc, char** argv)
+{
 
-int main(int argc, char** argv) {
-	//Initialize GLUT
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowSize(400, 400);
+    //glVertex3f(x1/100,y1/100,0.0);write your code here
+    printf("Enter value of X1 :");
+    scanf("%f",&x1);
+    printf("Enter value of y1 :");
+    scanf("%f",&y1);
+    printf("Enter value of X2 :");
+    scanf("%f",&x2);
+    printf("Enter value of Y2 :");
+    scanf("%f",&y2);
+    dx=x2-x1;
+    dy=y2-y1;
+    m=dy/dx;
 
-	//Create the window
-	glutCreateWindow("Lighting ");
-	initRendering();
 
-	//Set handler functions
-	glutDisplayFunc(drawScene);
-	glutKeyboardFunc(handleKeypress);
-	glutReshapeFunc(handleResize);
-
-	glutTimerFunc(25, update, 0); //Add a timer
-
-	glutMainLoop();
-	return 0;
+glutInit(&argc, argv);
+glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB);
+glutInitWindowSize (500, 500);
+glutInitWindowPosition (100, 100);
+glutCreateWindow("Glu quadPoly");
+init ();
+glutDisplayFunc(display);
+glutMainLoop();
+return 0; /* ISO C requires main to return int. */
 }
