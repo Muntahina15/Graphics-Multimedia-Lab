@@ -1,144 +1,266 @@
-#include<windows.h>
+#include <GL/gl.h>
+#include <GL/glu.h>
 #include <GL/glut.h>
 #include <stdlib.h>
-static void resize(int width, int height)
+#include <stdio.h>
+#include <windows.h>
+
+int windowWidth=500;
+int windowHeight=500;
+
+
+void display(void)
 {
-    const float ar = (float) width / (float) height;
+glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+glMatrixMode( GL_PROJECTION );
+glLoadIdentity();
+gluOrtho2D(-25,25,-25,25);
+glMatrixMode( GL_MODELVIEW );
+glLoadIdentity();
+glViewport(0, 0 ,windowWidth ,windowHeight);
 
-    glViewport(0, 0, width, height);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glFrustum(-ar, ar, -1.0, 1.0, 2.0, 100.0);
+glPushMatrix();
+glBegin(GL_TRIANGLES);
 
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity() ;
-}
-
-static void display(void)
-{
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
-
-
-    glBegin(GL_POLYGON);//uporer part
-
-
-        glColor3d(128,128,128);
-        glVertex3f(0,6,-20);//1st
-
-        glColor3d(128,128,128);
-        glVertex3f(5,3,-20);//2nd
-
-        glColor3d(128,128,128);
-        glVertex3f(-5,3,-20);//3rd
-
-        glColor3d(128,128,128);
-        glVertex3f(0,6,-20);//4th
-
+   glColor3f(1.0,1.0,1.0);
+    glVertex2f(3.0,8.0);
+    glVertex2f(4.0,8.0);
+    glVertex2f(3.5, 9.0);
 
     glEnd();
+    glPopMatrix();
 
-     glBegin(GL_POLYGON);//uporer part
+glPushMatrix();
+glBegin(GL_QUADS);
 
-
-        glColor3d(128,0,0);
-        glVertex3f(5,3,-20);//1st
-
-        glColor3d(128,0,0);
-        glVertex3f(5,-3,-20);//2nd
-
-          glColor3d(128,0,0);
-        glVertex3f(-5,-3,-20);//3rd
-
-          glColor3d(128,0,0);
-        glVertex3f(-5,3,-20);//4th
-
+    glColor4f(0.0,1.0,1.0,1.0);
+    glVertex2f(3.0,8.0);
+    glVertex2f(3.0,3.0);
+    glVertex2f(4.0,3.0);
+    glVertex2f(4.0,8.0);
 
     glEnd();
-     glBegin(GL_POLYGON);//uporer part
+    glPopMatrix();
 
 
-        glColor3d(0,255,0);
-        glVertex3f(3,3,-20);//1st
 
-        glColor3d(0,255,0);
-        glVertex3f(3,-3,-20);//2nd
 
-          glColor3d(0,255,0);
-        glVertex3f(-3,-3,-20);//3rd
+glPushMatrix();
+glBegin(GL_TRIANGLES);
 
-           glColor3d(0,255,0);
-        glVertex3f(-3,3,-20);//4th
-
+   glColor3f(1.0,1.0,1.0);
+    glVertex2f(11.0,8.0);
+    glVertex2f(12.0,8.0);
+    glVertex2f(11.5,9);
 
     glEnd();
-    glBegin(GL_POLYGON);//uporer part
+    glPopMatrix();
 
+glPushMatrix();
+glBegin(GL_QUADS);
 
-           glColor3d(139,0,139);
-        glVertex3f(1,0,-20);//1st
-
-          glColor3d(139,0,139);
-        glVertex3f(1,-3,-20);//2nd
-
-             glColor3d(139,0,139);
-        glVertex3f(-1,-3,-20);//3rd
-
-           glColor3d(139,0,139);
-        glVertex3f(-1,0,-20);//4th
-
+    glColor4f(0.0,1.0,1.0,0.0);
+    glVertex2f(11.0,8.0);
+    glVertex2f(11.0,3.0);
+    glVertex2f(12.0,3.0);
+    glVertex2f(12.0,8.0);
 
     glEnd();
+    glPopMatrix();
+
+
+glPushMatrix();
+glBegin(GL_TRIANGLES);
+
+   glColor3f(1.0,1.0,1.0);
+    glVertex2f(5.0,10.0);
+    glVertex2f(6.0,10.0);
+    glVertex2f(5.5,11.0);
+
+    glEnd();
+    glPopMatrix();
+
+glPushMatrix();
+glBegin(GL_QUADS);
+
+    glColor4f(0.0,1.0,1.0,0.0);
+    glVertex2f(5.0,10.0);
+    glVertex2f(5.0,3.0);
+    glVertex2f(6.0,3.0);
+    glVertex2f(6.0,10.0);
+
+    glEnd();
+    glPopMatrix();
 
 
 
 
+glPushMatrix();
+glBegin(GL_TRIANGLES);
+
+   glColor3f(1.0,1.0,1.0);
+    glVertex2f(9.0,10.0);
+    glVertex2f(10.0,10.0);
+    glVertex2f(9.5,11.0);
+
+    glEnd();
+    glPopMatrix();
+
+glPushMatrix();
+glBegin(GL_QUADS);
+
+    glColor4f(0.0,1.0,1.0,0.0);
+    glVertex2f(9.0,10.0);
+    glVertex2f(9.0,3.0);
+    glVertex2f(10.0,3.0);
+    glVertex2f(10.0,10.0);
+
+    glEnd();
+    glPopMatrix();
+
+
+glPushMatrix();
+glBegin(GL_TRIANGLES);
+
+   glColor3f(1.0,1.0,1.0);
+    glVertex2f(7.0,12.0);
+    glVertex2f(8.0,12.0);
+    glVertex2f(7.5,13);
+
+    glEnd();
+    glPopMatrix();
+
+glPushMatrix();
+glBegin(GL_QUADS);
+
+    glColor4f(0.0,1.0,1.0,0.0);
+    glVertex2f(7.0,12.0);
+    glVertex2f(7.0,3.0);
+    glVertex2f(8.0,3.0);
+    glVertex2f(8.0,12.0);
+
+    glEnd();
+    glPopMatrix();
+
+
+glPushMatrix();
+glBegin(GL_QUADS);
+
+   glColor4f(1.0,0.0,0.0,0.0);
+    glVertex2f(2.0,2.0);
+    glVertex2f(1.0,1.0);
+    glVertex2f(14.0,1.0);
+    glVertex2f(13.0,2.0);
+
+    glEnd();
+    glPopMatrix();
+
+glPushMatrix();
+glBegin(GL_QUADS);
+
+    glColor4f(1.0,1.0,1.0,1.0);
+    glVertex2f(3.0,3.0);
+    glVertex2f(2.0,2.0);
+    glVertex2f(13.0,2.0);
+    glVertex2f(12.0,3.0);
+
+    glEnd();
+    glPopMatrix();
+
+glPushMatrix();
+glBegin(GL_QUADS);
+
+       glColor4f(1.0,1.0,1.0,1.0);
+    glVertex2f(15.0,14.0);
+    glVertex2f(15.0,1.0);
+    glVertex2f(21.0,1.0);
+    glVertex2f(21.0,14.0);
+
+    glEnd();
+    glPopMatrix();
+    glPushMatrix();
+glBegin(GL_QUADS);
+
+
+     glColor4f(0.0,1.0,0.0,1.0);
+    glVertex2f(16.0,11.0);
+    glVertex2f(16.0,9.0);
+    glVertex2f(17.0,9.0);
+    glVertex2f(17.0,11.0);
+    glEnd();
+    glPopMatrix();
+    glPushMatrix();
+glBegin(GL_QUADS);
+
+
+     glColor4f(0.0,1.0,0.0,1.0);
+    glVertex2f(16.0,8.0);
+    glVertex2f(16.0,5.0);
+    glVertex2f(17.0,5.0);
+    glVertex2f(17.0,8.0);
+    glEnd();
+    glPopMatrix();
+    glPushMatrix();
+glBegin(GL_QUADS);
+
+    glColor4f(0.0,1.0,0.0,1.0);
+    glVertex2f(16.0,4.0);
+    glVertex2f(16.0,2.0);
+    glVertex2f(17.0,2.0);
+    glVertex2f(17.0,4.0);
+
+    glEnd();
+    glPopMatrix();
+    glPushMatrix();
+glBegin(GL_QUADS);
+
+     glColor4f(0.0,1.0,0.0,1.0);
+    glVertex2f(19.0,4.0);
+    glVertex2f(19.0,2.0);
+    glVertex2f(20.0,2.0);
+    glVertex2f(20.0,4.0);
+
+    glEnd();
+    glPopMatrix();
+    glPushMatrix();
+glBegin(GL_QUADS);
+
+
+     glColor4f(0.0,1.0,0.0,1.0);
+    glVertex2f(19.0,8.0);
+    glVertex2f(19.0,5.0);
+    glVertex2f(20.0,5.0);
+    glVertex2f(20.0,8.0);
+
+    glEnd();
+    glPopMatrix();
+    glPushMatrix();
+glBegin(GL_QUADS);
+
+        glColor4f(0.0,1.0,0.0,1.0);
+    glVertex2f(19.0,11.0);
+    glVertex2f(19.0,9.0);
+    glVertex2f(20.0,9.0);
+    glVertex2f(20.0,11.0);
+
+    glEnd();
+    glPopMatrix();
 
 
 
 
-
-
-    glutSwapBuffers();
+glFlush();
+glutSwapBuffers();
 }
 
-
-static void key(unsigned char key, int x, int y)
+int main (int argc, char **argv)
 {
-    switch (key)
-    {
-    case 27 :
-    case 'q':
-        exit(0);
-        break;
-    }
-    glutPostRedisplay();
-}
-
-static void idle(void)
-{
-    glutPostRedisplay();
-}
-
-/* Program entry point */
-int main(int argc, char *argv[])
-{
-    glutInit(&argc, argv);
-    glutInitWindowSize(740,680);
-    glutInitWindowPosition(12,12);
-    glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
-
-    glutCreateWindow("GLUT quadPoly");
-
-    glutReshapeFunc(resize);
-    glutDisplayFunc(display);
-    glutKeyboardFunc(key);
-    glutIdleFunc(idle);
-
-    glClearColor(0,0,0,0);
-
-    glutMainLoop();
-
-    return EXIT_SUCCESS;
+glutInit(&argc, argv);
+glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
+glutInitWindowPosition(100,100);
+glutInitWindowSize(windowWidth, windowHeight);
+glutCreateWindow("GLUTquadPoly");
+glutDisplayFunc(display);
+glutMainLoop();
+return 0;
 }
