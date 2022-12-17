@@ -1,7 +1,6 @@
-#include <windows.h>
 #include <iostream>
 #include <stdlib.h>
-
+#include<windows.h>
 #ifdef __APPLE__
 #include <OpenGL/OpenGL.h>
 #include <GLUT/glut.h>
@@ -14,7 +13,7 @@ using namespace std;
 //Called when a key is pressed
 void handleKeypress(unsigned char key, int x, int y) {
 	switch (key) {
-		case 37: //Escape key
+		case 27: //Escape key
 			exit(0);
 	}
 }
@@ -22,8 +21,13 @@ void handleKeypress(unsigned char key, int x, int y) {
 //Initializes 3D rendering
 void initRendering() {
 	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_COLOR_MATERIAL); //Enable color
-	glClearColor(0.9f, 0.7f, 1.0f, 1.0f); //Change the background to sky blue
+	glEnable(GL_COLOR_MATERIAL);
+	glEnable(GL_LIGHTING); //Enable lighting
+	//you can have upto 8 lighting
+	glEnable(GL_LIGHT0); //Enable light #0
+	glEnable(GL_LIGHT1); //Enable light #1
+	glEnable(GL_NORMALIZE); //Automatically normalize normals
+	//glShadeModel(GL_SMOOTH); //Enable smooth shading
 }
 
 //Called when the window is resized
@@ -34,8 +38,7 @@ void handleResize(int w, int h) {
 	gluPerspective(45.0, (double)w / (double)h, 1.0, 200.0);
 }
 
-float _angle = 30.0f;
-float _cameraAngle = 0.0f;
+float _angle = -70.0f;
 
 //Draws the 3D scene
 void drawScene() {
@@ -43,78 +46,93 @@ void drawScene() {
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	glRotatef(-_cameraAngle, 0.0f, 1.0f, 0.0f);
-	glTranslatef(0.0f, 0.0f, -5.0f);
 
-	glPushMatrix();
-	glTranslatef(0.0f, -1.0f, 0.0f);
-	glRotatef(_angle, 0.0f, 0.0f, -1.0f);
+	glTranslatef(0.0f, 0.0f, -8.0f);
 
+	//Add ambient light
+	//sh that shines everywhere in our scene by the same amount
+	//every face gets the same amount
+	GLfloat ambientColor[] = {0.3f, 0.3f, 0.3f, 1.0f}; //Color (0.2, 0.2, 0.2) and intensity //can be greater than 1 so not like color
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientColor);
+
+	//Add positioned light
+	GLfloat lightColor0[] = {0.9f, 0.9f, 0.9f, 1.0f}; //Color (0.9, 0.9, 0.9)
+	GLfloat lightPos0[] = {4.0f, 0.0f, 8.0f, 1.0f}; //Positioned at (4, 0, 8)
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor0);
+	glLightfv(GL_LIGHT0, GL_POSITION, lightPos0);
+
+	//Add directed light
+	GLfloat lightColor1[] = {0.2f, 0.5f, 0.5f, 1.0f}; //Color (0.2, 0.5, 0.5)
+	//Coming from the direction (-1, 0.5, 0.5)
+	// 0 because direced light source
+	GLfloat lightPos1[] = {-1.0f, 0.5f, 0.5f, 0.0f};
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, lightColor1);
+	glLightfv(GL_LIGHT1, GL_POSITION, lightPos1);
+
+	glRotatef(_angle, 1.0f, 0.0f, 0.0f);
+	glColor3f(1.0f, 1.0f, 0.0f);
 	glBegin(GL_QUADS);
 
-	//Trapezoid
-	glColor3f(0.0f, 1.0f, 1.0f);
-	glVertex3f(-0.7f, -0.5f, 0.0f);
-	glVertex3f(0.7f, -0.5f, 0.0f);
-	glVertex3f(0.7f, 0.5f, 0.0f);
-	glVertex3f(-0.7f, 0.5f, 0.0f);
+	//Front
+	//normal is a vector perpendicular the face we are drawing
+	//we need this because if the light source is directly opp to the face then it will be light a lot
+	//or if behind it won't be lit at all
+	//they have to point outwards, so the back of the face don't get light
+	glNormal3f(0.0f, 0.0f, 1.0f);
+	//glNormal3f(-1.0f, 0.0f, 1.0f);
+	glVertex3f(-1.5f, -1.0f, 1.5f);
+	//glNormal3f(1.0f, 0.0f, 1.0f);
+	glVertex3f(1.5f, -1.0f, 1.5f);
+	//glNormal3f(1.0f, 0.0f, 1.0f);
+	glVertex3f(1.5f, 1.0f, 1.5f);
+	//glNormal3f(-1.0f, 0.0f, 1.0f);
+	glVertex3f(-1.5f, 1.0f, 1.5f);
+
+	//Right
+	glNormal3f(1.0f, 0.0f, 0.0f);
+	//glNormal3f(1.0f, 0.0f, -1.0f);
+	glVertex3f(1.5f, -1.0f, -1.5f);
+	//glNormal3f(1.0f, 0.0f, -1.0f);
+	glVertex3f(1.5f, 1.0f, -1.5f);
+	//glNormal3f(1.0f, 0.0f, 1.0f);
+	glVertex3f(1.5f, 1.0f, 1.5f);
+	//glNormal3f(1.0f, 0.0f, 1.0f);
+	glVertex3f(1.5f, -1.0f, 1.5f);
+
+	//Back
+	glNormal3f(0.0f, 0.0f, -1.0f);
+	//glNormal3f(-1.0f, 0.0f, -1.0f);
+	glVertex3f(-1.5f, -1.0f, -1.5f);
+	//glNormal3f(-1.0f, 0.0f, -1.0f);
+	glVertex3f(-1.5f, 1.0f, -1.5f);
+	//glNormal3f(1.0f, 0.0f, -1.0f);
+	glVertex3f(1.5f, 1.0f, -1.5f);
+	//glNormal3f(1.0f, 0.0f, -1.0f);
+	glVertex3f(1.5f, -1.0f, -1.5f);
+
+	//Left
+	glNormal3f(-1.0f, 0.0f, 0.0f);
+	//glNormal3f(-1.0f, 0.0f, -1.0f);
+	glVertex3f(-1.5f, -1.0f, -1.5f);
+	//glNormal3f(-1.0f, 0.0f, 1.0f);
+	glVertex3f(-1.5f, -1.0f, 1.5f);
+	//glNormal3f(-1.0f, 0.0f, 1.0f);
+	glVertex3f(-1.5f, 1.0f, 1.5f);
+	//glNormal3f(-1.0f, 0.0f, -1.0f);
+	glVertex3f(-1.5f, 1.0f, -1.5f);
 
 	glEnd();
-
-	glPopMatrix();
-	glPushMatrix();
-	glTranslatef(1.0f, 1.0f, 0.0f);
-	glRotatef(_angle, 0.0f, 1.0f, 0.0f);
-	glScalef(0.7f, 0.7f, 0.7f);
-
-	glBegin(GL_TRIANGLES);
-	glColor3f(0.0f, 1.0f, 0.0f);
-
-	//Pentagon
-	glVertex3f(-0.5f, -0.5f, 0.0f);
-	glVertex3f(0.5f, -0.5f, 0.0f);
-	glVertex3f(-0.5f, 0.0f, 0.0f);
-
-	glVertex3f(-0.5f, 0.0f, 0.0f);
-	glVertex3f(0.5f, -0.5f, 0.0f);
-	glVertex3f(0.5f, 0.0f, 0.0f);
-
-	glVertex3f(-0.5f, 0.0f, 0.0f);
-	glVertex3f(0.5f, 0.0f, 0.0f);
-	glVertex3f(0.0f, 0.5f, 0.0f);
-
-
-	glEnd();
-
-	glPopMatrix();
-	glPushMatrix();
-	glTranslatef(-1.0f, 1.0f, 0.0f);
-	glRotatef(_angle, 1.0f, 0.0f, 0.0f);
-
-	glBegin(GL_TRIANGLES);
-
-	//Triangle
-	glColor3f(1.0f, 1.0f, 0.0f);
-	glVertex3f(0.5f, -0.5f, 0.0f);
-	glVertex3f(0.0f, 0.5f, 0.0f);
-	glVertex3f(-0.5f, -0.5f, 0.0f);
-
-	glEnd();
-
-	glPopMatrix();
-
-
 
 	glutSwapBuffers();
 }
 
 void update(int value) {
-	_angle += 2.0f;
+	_angle += 1.5f;
 	if (_angle > 360) {
 		_angle -= 360;
 	}
 
-	glutPostRedisplay(); ////Tell GLUT that the scene has changed
+	glutPostRedisplay();
 	glutTimerFunc(25, update, 0);
 }
 
@@ -125,7 +143,7 @@ int main(int argc, char** argv) {
 	glutInitWindowSize(400, 400);
 
 	//Create the window
-	glutCreateWindow("3D Transformation");
+	glutCreateWindow("Lighting ");
 	initRendering();
 
 	//Set handler functions
@@ -138,11 +156,3 @@ int main(int argc, char** argv) {
 	glutMainLoop();
 	return 0;
 }
-
-
-
-
-
-
-
-
